@@ -1,1 +1,1 @@
-
+pkg install proot-distro
