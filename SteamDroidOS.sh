@@ -11,5 +11,9 @@ distro_setup() {
         # Configure en_US.UTF-8 locale.
         sed -i -E 's/#[[:space:]]?(en_US.UTF-8[[:space:]]+UTF-8)/\1/g' ./etc/locale.gen
         run_proot_cmd DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
+        # Set default shell to bash.
+	run_proot_cmd usermod --shell /bin/bash root
+	# Fix issue where come CA certificates links may not be created.
+	run_proot_cmd update-ca-certificates --fresh
 }
 
