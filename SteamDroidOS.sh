@@ -1,7 +1,7 @@
 # This is a default distribution plug-in.
 # Do not modify this file as your changes will be overwritten on next update.
 # If you want customize installation, please make a copy.
-DISTRO_NAME="Rasppberry pi"
+DISTRO_NAME="SteamDroid OS"
 DISTRO_COMMENT="Stable release."
 
 TARBALL_URL['aarch64']="http://downloads.raspberrypi.org/raspbian_lite/root.tar.xz"
