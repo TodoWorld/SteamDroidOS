@@ -20,7 +20,7 @@ distro_setup() {
         # Fix issue where come CA certificates links may not be created.
         run_proot_cmd apt update -y
 #       run_proot_cmd apt full-upgrade -y
-        run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake -y
+        run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 -y
         echo "Install Steam"
         run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
         run_proot_cmd apt install ./steam.deb -y
