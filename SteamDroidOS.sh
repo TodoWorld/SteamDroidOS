@@ -22,19 +22,19 @@ distro_setup() {
 #       run_proot_cmd apt full-upgrade -y
         run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 xfce4 dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension -y
         echo "Install Steam"
-        run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
-        run_proot_cmd apt install ./steam.deb -y
+        #run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
+        #run_proot_cmd apt install ./steam.deb -y
         echo "Enable ARMHF i386 AMD64 Lib"
-        run_proot_cmd dpkg --add-architecture armhf 
-        run_proot_cmd dpkg --add-architecture i386
-        run_proot_cmd dpkg --add-architecture amd64
-        run_proot_cmd apt update -y
+        #run_proot_cmd dpkg --add-architecture armhf 
+        #run_proot_cmd dpkg --add-architecture i386
+        #run_proot_cmd dpkg --add-architecture amd64
+        #run_proot_cmd apt update -y
         echo "Install BOX64"
         run_proot_cmd git clone https://github.com/ptitSeb/box64 #efd103004c770e8ec4646c11c24b92a5d8d49e54
         run_proot_cmd mkdir box64/build
         run_proot_cmd cmake -DBOX32=1 -DBOX32_BINFMT=1 -STEAMOS=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_BUILD_TYPE=Release -DBOX64_DEBUG=1 -DBOX64_USE_DYNAREC=1 -DBOX64_USE_FFMPEG=1 -DBOX64_ENABLE_VULKAN=1 -B box64/build -S box64
         run_proot_cmd make -C box64/build/ install
-        #run_proot_cmd /box64/install_steam.sh
+        run_proot_cmd box64/install_steam.sh
         echo "Init User"
         run_proot_cmd sed -i '/^# User privilege specification/a steamdroidos ALL=(ALL:ALL) ALL' /etc/sudoers
         run_proot_cmd adduser --gecos '' --disabled-password steamdroidos
