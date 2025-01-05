@@ -20,7 +20,7 @@ distro_setup() {
         # Fix issue where come CA certificates links may not be created.
         run_proot_cmd apt update -y
 #       run_proot_cmd apt full-upgrade -y
-        run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 -y
+        run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 xfce4 dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension -y
         echo "Install Steam"
         run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
         run_proot_cmd apt install ./steam.deb -y
@@ -47,6 +47,12 @@ distro_setup() {
 #       run_proot_cmd rm /tmp/InstallFEX.py
 #       run_proot_cmd su - steamdroidos -c "curl -L https://raw.githubusercontent.com/Botspot/pi-apps/master/install | sh"
 #       run_proot_cmd su - steamdroidos -c "~/pi-apps/manage install Steam"
+        echo "Init VNC"
+        run_proot_cmd su - steamdroidos -c "printf \"password\npassword\n\n\" | vncpasswd"
+        run_proot_cmd su - steamdroidos -c "echo -e \"#!/bin/bash\nunset SESSION_MANAGER\nunset DBUS_SESSION_BUS_ADRESS\n\n# 啟動PulseAudio音效伺服器，音訊會從Termux傳出來\nexport PULSE_SERVER=127.0.0.1 && pulseaudio --start --disable-shm=1 --exit-idle-time=-1\n\n# 執行桌面環境，此處為XFCE\nexec startxfce4\" >> ~/.vnc/xstartup"
+        run_proot_cmd su - steamdroidos -c "chmod +x ~/.vnc/xstartup"
+        run_proot_cmd su - steamdroidos -c "echo -e \"# 目前的工作階段XFCE\nsession=xfce\n# 解析度，越高佔用頻寬越多\ngeometry=1920x1080\n# 位元深度，數值為8/16/24/32，數字越大畫面越好但越耗頻寬\ndepth=32\n# 讓外部網路可以連線\nlocalhost=no\" >> ~/.vnc/config"
+        run_proot_cmd su - steamdroidos -c "echo \"tigervncserver\" >> ~/.profile"
         echo "Set default shell to fish."
         run_proot_cmd usermod --shell /bin/fish root
         run_proot_cmd usermod --shell /bin/fish steamdroidos
