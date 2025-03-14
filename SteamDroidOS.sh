@@ -20,7 +20,7 @@ distro_setup() {
         # Fix issue where come CA certificates links may not be created.
         run_proot_cmd apt update -y
 #       run_proot_cmd apt full-upgrade -y
-        run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 xfce4 dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension -y
+        run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 kde-standard dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension -y #xfce4
         echo "Install Steam"
         #run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
         #run_proot_cmd apt install ./steam.deb -y
@@ -34,11 +34,16 @@ distro_setup() {
         run_proot_cmd mkdir box64/build
         run_proot_cmd cmake -DBOX32=1 -DBOX32_BINFMT=1 -STEAMOS=1 -DARM_DYNAREC=1 -DBAD_SIGNAL=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBOX64_DEBUG=1 -DBOX64_USE_DYNAREC=1 -DBOX64_USE_FFMPEG=1 -DBOX64_ENABLE_VULKAN=1 -B box64/build -S box64 #-DCMAKE_BUILD_TYPE=Release
         run_proot_cmd make -C box64/build/ install
-        run_proot_cmd box64/install_steam.sh
+#       run_proot_cmd box64/install_steam.sh
         echo "Init User"
         run_proot_cmd sed -i '/^# User privilege specification/a steamdroidos ALL=(ALL:ALL) ALL' /etc/sudoers
         run_proot_cmd adduser --gecos '' --disabled-password steamdroidos
         run_proot_cmd passwd -d steamdroidos
+        echo "Install pi-apps"
+#       run_proot_cmd su - steamdroidos -c "git clone https://github.com/Botspot/pi-apps"
+#       run_proot_cmd su - steamdroidos -c "pi-apps/install"
+#       run_proot_cmd su - steamdroidos -c "~/pi-apps/manage install Steam"
+
 #       run_proot_cmd su - steamdroidos -c "wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/install | bash;exit"
 #       run_proot_cmd setpriv --reuid=steamdroidos wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/install | bash
 #       run_proot_cmd curl --silent https://raw.githubusercontent.com/FEX-Emu/FEX/main/Scripts/InstallFEX.py --output /tmp/InstallFEX.py
@@ -48,9 +53,9 @@ distro_setup() {
 #       run_proot_cmd su - steamdroidos -c "~/pi-apps/manage install Steam"
         echo "Init VNC"
         run_proot_cmd su - steamdroidos -c "printf \"steamdroidos\nsteamdroidos\n\n\" | vncpasswd"
-        run_proot_cmd su - steamdroidos -c "echo -e \"#!/bin/bash\nunset SESSION_MANAGER\nunset DBUS_SESSION_BUS_ADRESS\n\n# 啟動PulseAudio音效伺服器，音訊會從Termux傳出來\nexport PULSE_SERVER=127.0.0.1 && pulseaudio --start --disable-shm=1 --exit-idle-time=-1\n\n# 執行桌面環境，此處為XFCE\nexec startxfce4\" >> ~/.vnc/xstartup"
+        run_proot_cmd su - steamdroidos -c "echo -e \"#!/bin/bash\nunset SESSION_MANAGER\nunset DBUS_SESSION_BUS_ADRESS\n\n# 啟動PulseAudio音效伺服器，音訊會從Termux傳出來\nexport PULSE_SERVER=127.0.0.1 && pulseaudio --start --disable-shm=1 --exit-idle-time=-1\n\n# 執行桌面環境，此處為XFCE\nexec startplasma-x11\" >> ~/.vnc/xstartup" #startxfce4
         run_proot_cmd su - steamdroidos -c "chmod +x ~/.vnc/xstartup"
-        run_proot_cmd su - steamdroidos -c "echo -e \"# 目前的工作階段XFCE\nsession=xfce\n# 解析度，越高佔用頻寬越多\ngeometry=1920x1080\n# 位元深度，數值為8/16/24/32，數字越大畫面越好但越耗頻寬\ndepth=32\n# 讓外部網路可以連線\nlocalhost=no\" >> ~/.vnc/config"
+        run_proot_cmd su - steamdroidos -c "echo -e \"# 目前的工作階段XFCE\nsession=xfce\n# 解析度，越高佔用頻寬越多\ngeometry=2560x1080\n# 位元深度，數值為8/16/24/32，數字越大畫面越好但越耗頻寬\ndepth=32\n# 讓外部網路可以連線\nlocalhost=no\" >> ~/.vnc/config"
         run_proot_cmd su - steamdroidos -c "echo \"tigervncserver\" >> ~/.profile"
         echo "Set default shell to fish."
         run_proot_cmd usermod --shell /bin/fish root
