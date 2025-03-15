@@ -31,26 +31,31 @@ distro_setup() {
         run_proot_cmd apt install -y libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 libx11-dev libxcb1-dev
         run_proot_cmd apt install -y kde-standard 
         run_proot_cmd apt install -y dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension #xfce4
+        
         # 編譯  virglrenderer
         run_proot_cmd git clone https://github.com/virgl/virglrenderer.git
         run_proot_cmd mkdir virglrenderer/build
         run_proot_cmd cmake -DENABLE_VULKAN=ON -B virglrenderer/build -S virglrenderer
         run_proot_cmd make -j$(nproc) -C virglrenderer/build/ install
+        
         echo "Enable ARMHF i386 AMD64 Lib"
 #       run_proot_cmd dpkg --add-architecture armhf 
 #       run_proot_cmd dpkg --add-architecture i386
 #       run_proot_cmd dpkg --add-architecture amd64
 #       run_proot_cmd apt update -y
+
         echo "Install BOX64"
         run_proot_cmd git clone https://github.com/ptitSeb/box64 #efd103004c770e8ec4646c11c24b92a5d8d49e54
         run_proot_cmd mkdir box64/build
         run_proot_cmd cmake -DBOX32=1 -DBOX32_BINFMT=1 -STEAMOS=1 -DARM_DYNAREC=1 -DBAD_SIGNAL=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBOX64_DEBUG=1 -DBOX64_USE_DYNAREC=1 -DBOX64_USE_FFMPEG=1 -DBOX64_ENABLE_VULKAN=1 -B box64/build -S box64 #-DCMAKE_BUILD_TYPE=Release
         run_proot_cmd make -C box64/build/ install
 #       run_proot_cmd box64/install_steam.sh
+
         echo "Init User"
         run_proot_cmd sed -i '/^# User privilege specification/a steamdroidos ALL=(ALL:ALL) ALL' /etc/sudoers
         run_proot_cmd adduser --gecos '' --disabled-password steamdroidos
         run_proot_cmd passwd -d steamdroidos
+        
         echo "Install pi-apps"
 #       run_proot_cmd su - steamdroidos -c "git clone https://github.com/Botspot/pi-apps"
 #       run_proot_cmd su - steamdroidos -c "pi-apps/install"
@@ -63,22 +68,24 @@ distro_setup() {
 #       run_proot_cmd rm /tmp/InstallFEX.py
 #       run_proot_cmd su - steamdroidos -c "curl -L https://raw.githubusercontent.com/Botspot/pi-apps/master/install | sh"
 #       run_proot_cmd su - steamdroidos -c "~/pi-apps/manage install Steam"
-        echo "Install Steam"
-        run_proot_cmd su - steamdroidos -c "box64 /root/box64/install_steam.sh"
-        run_proot_cmd su - steamdroidos -c "box64 /home/steamdroidos/steam/lib/steam/bin_steam.sh"
-#       run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
-#       run_proot_cmd apt install ./steam.deb -y
+
         echo "Init VNC"
         run_proot_cmd su - steamdroidos -c "printf \"steamdroidos\nsteamdroidos\n\n\" | vncpasswd"
         run_proot_cmd su - steamdroidos -c "echo -e \"#!/bin/bash\nunset SESSION_MANAGER\nunset DBUS_SESSION_BUS_ADRESS\n\n# 啟動PulseAudio音效伺服器，音訊會從Termux傳出來\nexport PULSE_SERVER=127.0.0.1 && pulseaudio --start --disable-shm=1 --exit-idle-time=-1\n\n# 執行桌面環境，此處為XFCE\nexec startplasma-x11\" >> ~/.vnc/xstartup" #startxfce4
         run_proot_cmd su - steamdroidos -c "chmod +x ~/.vnc/xstartup"
         run_proot_cmd su - steamdroidos -c "echo -e \"# 目前的工作階段XFCE\nsession=xfce\n# 解析度，越高佔用頻寬越多\ngeometry=2560x1080\n# 位元深度，數值為8/16/24/32，數字越大畫面越好但越耗頻寬\ndepth=32\n# 讓外部網路可以連線\nlocalhost=no\" >> ~/.vnc/config"
         run_proot_cmd su - steamdroidos -c "echo \"tigervncserver\" >> ~/.profile"
+        
+        echo "Install Steam"
+        run_proot_cmd su - steamdroidos -c "box64 /root/box64/install_steam.sh"
+        run_proot_cmd su - steamdroidos -c "box64 /home/steamdroidos/steam/lib/steam/bin_steam.sh"
+#       run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
+#       run_proot_cmd apt install ./steam.deb -y
+
         echo "Set default shell to fish."
         run_proot_cmd usermod --shell /bin/fish root
         run_proot_cmd usermod --shell /bin/fish steamdroidos
 
-#       run_proot_cmd su - steamdroidos
         echo "proot-distro login SteamDroidOS"
 }
 
