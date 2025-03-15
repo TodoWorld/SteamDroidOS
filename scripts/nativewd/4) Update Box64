@@ -4,5 +4,5 @@ export PATH=$GLIBC_PREFIX/bin:$PATH
 cd ~/; git clone https://github.com/ptitSeb/box64
 cd ~/box64; sed -i 's/\/usr/\/data\/data\/com.termux\/files\/usr\/glibc/g' CMakeLists.txt
 sed -i 's/\/etc/\/data\/data\/com.termux\/files\/usr\/glibc\/etc/g' CMakeLists.txt
-mkdir build; cd build; cmake --install-prefix $PREFIX/glibc .. -DARM_DYNAREC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBAD_SIGNAL=ON -DSD845=ON
+mkdir build; cd build; cmake --install-prefix $PREFIX/glibc .. -DBOX32=1 -DBOX32_BINFMT=1 -STEAMOS=1 -DBAD_SIGNAL=1 -DBOX64_DEBUG=1 -DBOX64_USE_DYNAREC=1 -DBOX64_USE_FFMPEG=1 -DBOX64_ENABLE_VULKAN=1 -DARM_DYNAREC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBAD_SIGNAL=ON -DSD845=ON
 make -j8; make install; rm -rf ~/box64; cd ~/

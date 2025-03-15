@@ -28,6 +28,7 @@ def scripts():
     os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/box64droid &>/dev/null")
     os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/box64droid.py &>/dev/null")
     os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/start-box64.py &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/start-SteamDroidOS.py &>/dev/null")
     os.system("wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks &>/dev/null")
     os.system("chmod +x box64droid winetricks")
     os.system("mv box64droid box64droid.py start-box64.py winetricks $PREFIX/bin/")

@@ -124,6 +124,7 @@ def main_menu():
     os.system("clear")
     print("Welcome to Box64Droid! Select to start:")
     print("")
+    print("1) SteamDroidOS")
     print("1) Wine")
     print("2) Wine (debug version)")
     print("3) Change Wine version")
@@ -136,9 +137,12 @@ def main_menu():
     print("Note: Console UI will be EOL on 1 June of 2025. ATM Box64Droid will use Termux:Widgets. To use it install and create Termux widget in homescreen") 
     print("")
     choice = input()
-    if choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6" and choice != "7" and choice != "8":
+    if choice != "0" and choice != "1" and choice != "2" and choice != "3" and choice != "4" and choice != "5" and choice != "6" and choice != "7" and choice != "8" and choice != "9":
         print("Incorrect or empty option!")
         main_menu()
+    elif choice == "0":
+        os.system("python3 $PREFIX/bin/start-SteamDroidOS.py")
+        exit()
     elif choice == "1":
         os.system("python3 $PREFIX/bin/start-box64.py")
         exit()
@@ -174,7 +178,7 @@ def main_menu():
         os.system("python3 $PREFIX/bin/checkupdates.py")
     elif choice == "6":
         os.system("clear")
-        os.system(r"unset LD_PRELOAD; export GLIBC_PREFIX=/data/data/com.termux/files/usr/glibc; export PATH=$GLIBC_PREFIX/bin:$PATH; cd ~/; git clone https://github.com/ptitSeb/box64; cd ~/box64; sed -i 's/\/usr/\/data\/data\/com.termux\/files\/usr\/glibc/g' CMakeLists.txt; sed -i 's/\/etc/\/data\/data\/com.termux\/files\/usr\/glibc\/etc/g' CMakeLists.txt; mkdir build; cd build; cmake --install-prefix $PREFIX/glibc .. -DARM_DYNAREC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBAD_SIGNAL=ON -DSD845=ON; make -j8; make install; rm -rf ~/box64; cd ~/")
+        os.system(r"unset LD_PRELOAD; export GLIBC_PREFIX=/data/data/com.termux/files/usr/glibc; export PATH=$GLIBC_PREFIX/bin:$PATH; cd ~/; git clone https://github.com/ptitSeb/box64; cd ~/box64; sed -i 's/\/usr/\/data\/data\/com.termux\/files\/usr\/glibc/g' CMakeLists.txt; sed -i 's/\/etc/\/data\/data\/com.termux\/files\/usr\/glibc\/etc/g' CMakeLists.txt; mkdir build; cd build; cmake --install-prefix $PREFIX/glibc .. -DBOX32=1 -DBOX32_BINFMT=1 -STEAMOS=1 -DBAD_SIGNAL=1 -DBOX64_DEBUG=1 -DBOX64_USE_DYNAREC=1 -DBOX64_USE_FFMPEG=1 -DBOX64_ENABLE_VULKAN=1 -DARM_DYNAREC=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBAD_SIGNAL=ON -DSD845=ON; make -j8; make install; rm -rf ~/box64; cd ~/")
         os.system("python3 $PREFIX/bin/box64droid.py --start")
         exit()
     elif choice == "7":
@@ -190,6 +194,8 @@ def main_menu():
         os.system('pkill -f "app_process / com.termux.x11"')
         os.system('pkill -f pulseaudio')
         exit()
+    elif choice == "9":
+        os.system("bash")
 def start():
     if len(sys.argv) < 2:
         print("Empty argument, use --help to see available arguments")
