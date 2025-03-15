@@ -14,8 +14,8 @@ def install_rootfs():
     os.system("wget -q --show-progress https://github.com/Ilya114/Box64Droid/releases/download/stable/box64droid-rootfs-virgl.tar.xz")
     os.system("proot-distro restore box64droid-rootfs-virgl.tar.xz &>/dev/null")
 def scripts():
-    os.system("wget https://raw.githubusercontent.com/Ilya114/Box64Droid/main/scripts/virgl/box64droid &>/dev/null")
-    os.system("wget https://raw.githubusercontent.com/Ilya114/Box64Droid/main/scripts/non-root/start-box64droid &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/virgl/box64droid &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/non-root/start-box64droid &>/dev/null")
     os.system("chmod +x start-box64droid box64droid")
     os.system("mv box64droid start-box64droid $PREFIX/bin/")
 def clear_waste():

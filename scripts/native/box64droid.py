@@ -170,7 +170,7 @@ def main_menu():
         recreate_prefix()
         main_menu()
     elif choice == "5":
-        os.system("wget https://raw.githubusercontent.com/Ilya114/Box64Droid/main/scripts/native/checkupdates.py &>/dev/null && mv checkupdates.py $PREFIX/bin")
+        os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/checkupdates.py &>/dev/null && mv checkupdates.py $PREFIX/bin")
         os.system("python3 $PREFIX/bin/checkupdates.py")
     elif choice == "6":
         os.system("clear")
@@ -230,7 +230,7 @@ def start():
         os.system("rm $PREFIX/bin/start-box64.py")
         os.system("rm -r $HOME/.shortcuts")
     elif sys.argv[1] == "--reinstall":
-        os.system("curl -o install https://raw.githubusercontent.com/Ilya114/Box64Droid/main/installers/install.sh && chmod +x install && ./install")
+        os.system("curl -o install https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/installers/install.sh && chmod +x install && ./install")
     elif sys.argv[1] == "--version":
         print("31.12.24")
     elif sys.argv[1] == "--help":
