@@ -4,6 +4,14 @@
 DISTRO_NAME="SteamDroid OS"
 DISTRO_COMMENT="Stable release."
 
+# Box4Droid
+#TARBALL_URL['aarch64']="https://github.com/termux/proot-distro/releases/download/v3.10.0/ubuntu-aarch64-pd-v3.10.0.tar.xz"
+#TARBALL_SHA256['aarch64']="e367c1cf89f4ff71a081903d12a99e3a7619fcb71e805851b25e70f556d12184"
+#TARBALL_URL['arm']="https://github.com/termux/proot-distro/releases/download/v3.10.0/ubuntu-arm-pd-v3.10.0.tar.xz"
+#TARBALL_SHA256['arm']="b07857afabf71d62c9a7727c3cb336c5a7e050e64628ab74ab2919cab22872ca"
+#TARBALL_URL['x86_64']="https://github.com/termux/proot-distro/releases/download/v3.10.0/ubuntu-x86_64-pd-v3.10.0.tar.xz"
+#TARBALL_SHA256['x86_64']="51a1da5b4db87ec35853d0865b1d7bf2472d39007f698ecd7ae4fa68edeb700b"
+
 TARBALL_URL['aarch64']="https://downloads.raspberrypi.org/raspios_lite_arm64/root.tar.xz"
 TARBALL_SHA256['aarch64']="db1b538171f40bc5f8980e3ce8153cf840627351e9c5dc2e5862f1284bc36c4b"
 #TARBALL_URL['aarch64']="http://downloads.raspberrypi.org/raspbian_lite/root.tar.xz"
@@ -14,7 +22,7 @@ TARBALL_SHA256['aarch64']="db1b538171f40bc5f8980e3ce8153cf840627351e9c5dc2e5862f
 #TARBALL_SHA256['arm']="dc5478e96f648e868d68c15c400338460088255d5d964bdfa33e5456ceea54ae"
 
 PROOT_ARGS+=(--bind=/system/lib64:/system/lib64 --user steamdroidos)
-ENV["LD_LIBRARY_PATH"]="/system/lib64:$LD_LIBRARY_PATH"
+#ENV["LD_LIBRARY_PATH"]="/system/lib64:$LD_LIBRARY_PATH"
 
 distro_setup() {
         # Configure en_US.UTF-8 locale.
@@ -57,6 +65,9 @@ distro_setup() {
         run_proot_cmd adduser --gecos '' --disabled-password steamdroidos
         run_proot_cmd passwd -d steamdroidos
         
+        echo "Set ENV Value"
+        run_proot_cmd su - steamdroidos -c "echo \"set -x LD_LIBRARY_PATH /system/lib64 $LD_LIBRARY_PATH\" >> ~/.config/fish/config.fish"
+
         echo "Install pi-apps"
 #       run_proot_cmd su - steamdroidos -c "git clone https://github.com/Botspot/pi-apps"
 #       run_proot_cmd su - steamdroidos -c "pi-apps/install"
@@ -80,6 +91,7 @@ distro_setup() {
         echo "Install Steam"
         run_proot_cmd su - steamdroidos -c "box64 /root/box64/install_steam.sh"
         run_proot_cmd su - steamdroidos -c "box64 /home/steamdroidos/steam/lib/steam/bin_steam.sh"
+        run_proot_cmd su - steamdroidos -c "rm -f ~/.local/share/Steam/ubuntu12_32/crashhandler.so"
 #       run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
 #       run_proot_cmd apt install ./steam.deb -y
 
