@@ -13,22 +13,34 @@ TARBALL_SHA256['aarch64']="db1b538171f40bc5f8980e3ce8153cf840627351e9c5dc2e5862f
 #TARBALL_URL['arm']="https://github.com/termux/proot-distro/releases/download/v4.11.0/ubuntu-noble-arm-pd-v4.11.0.tar.xz"
 #TARBALL_SHA256['arm']="dc5478e96f648e868d68c15c400338460088255d5d964bdfa33e5456ceea54ae"
 
+PROOT_ARGS+=(--bind=/system/lib64:/system/lib64 --user steamdroidos)
+ENV["LD_LIBRARY_PATH"]="/system/lib64:$LD_LIBRARY_PATH"
+
 distro_setup() {
         # Configure en_US.UTF-8 locale.
         sed -i -E 's/#[[:space:]]?(en_US.UTF-8[[:space:]]+UTF-8)/\1/g' ./etc/locale.gen
         run_proot_cmd DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
         # Fix issue where come CA certificates links may not be created.
+        # Install package
         run_proot_cmd apt update -y
 #       run_proot_cmd apt full-upgrade -y
-        run_proot_cmd apt install git wget fish sudo software-properties-common build-essential mono-runtime cmake libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 kde-standard dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension -y #xfce4
-        echo "Install Steam"
-        #run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
-        #run_proot_cmd apt install ./steam.deb -y
+        run_proot_cmd apt install -y git wget fish sudo 
+        run_proot_cmd apt install -y libvulkan-dev vulkan-tools libegl1-mesa-dev libgles2-mesa-dev libdrm-dev
+        run_proot_cmd apt install -y software-properties-common 
+        run_proot_cmd apt install -y cmake build-essential pkg-config mono-runtime
+        run_proot_cmd apt install -y libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 libx11-dev libxcb1-dev
+        run_proot_cmd apt install -y kde-standard 
+        run_proot_cmd apt install -y dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension #xfce4
+        # 編譯  virglrenderer
+        run_proot_cmd git clone https://github.com/virgl/virglrenderer.git
+        run_proot_cmd mkdir virglrenderer/build
+        run_proot_cmd cmake -DENABLE_VULKAN=ON -B virglrenderer/build -S virglrenderer
+        run_proot_cmd make -j$(nproc) -C virglrenderer/build/ install
         echo "Enable ARMHF i386 AMD64 Lib"
-        #run_proot_cmd dpkg --add-architecture armhf 
-        #run_proot_cmd dpkg --add-architecture i386
-        #run_proot_cmd dpkg --add-architecture amd64
-        #run_proot_cmd apt update -y
+#       run_proot_cmd dpkg --add-architecture armhf 
+#       run_proot_cmd dpkg --add-architecture i386
+#       run_proot_cmd dpkg --add-architecture amd64
+#       run_proot_cmd apt update -y
         echo "Install BOX64"
         run_proot_cmd git clone https://github.com/ptitSeb/box64 #efd103004c770e8ec4646c11c24b92a5d8d49e54
         run_proot_cmd mkdir box64/build
@@ -51,6 +63,11 @@ distro_setup() {
 #       run_proot_cmd rm /tmp/InstallFEX.py
 #       run_proot_cmd su - steamdroidos -c "curl -L https://raw.githubusercontent.com/Botspot/pi-apps/master/install | sh"
 #       run_proot_cmd su - steamdroidos -c "~/pi-apps/manage install Steam"
+        echo "Install Steam"
+        run_proot_cmd su - steamdroidos -c "box64 /root/box64/install_steam.sh"
+        run_proot_cmd su - steamdroidos -c "box64 /home/steamdroidos/steam/lib/steam/bin_steam.sh"
+#       run_proot_cmd wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
+#       run_proot_cmd apt install ./steam.deb -y
         echo "Init VNC"
         run_proot_cmd su - steamdroidos -c "printf \"steamdroidos\nsteamdroidos\n\n\" | vncpasswd"
         run_proot_cmd su - steamdroidos -c "echo -e \"#!/bin/bash\nunset SESSION_MANAGER\nunset DBUS_SESSION_BUS_ADRESS\n\n# 啟動PulseAudio音效伺服器，音訊會從Termux傳出來\nexport PULSE_SERVER=127.0.0.1 && pulseaudio --start --disable-shm=1 --exit-idle-time=-1\n\n# 執行桌面環境，此處為XFCE\nexec startplasma-x11\" >> ~/.vnc/xstartup" #startxfce4
@@ -62,6 +79,7 @@ distro_setup() {
         run_proot_cmd usermod --shell /bin/fish steamdroidos
 
 #       run_proot_cmd su - steamdroidos
+        echo "proot-distro login SteamDroidOS"
 }
 
 
