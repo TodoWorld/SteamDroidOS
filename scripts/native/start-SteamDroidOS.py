@@ -20,14 +20,14 @@ print("")
 res = input()
 if res != "1" and res != "2" and res != "3" and res != "4" and res != "5" and res != "6" and res != "7":
     print("Incorrect or empty resolution!")
-    os.system("python3 $PREFIX/bin/start-box64.py")
+    os.system("python3 $PREFIX/bin/start-SteamDroidOS.py")
     exit()
 elif res == "5":
     os.system("clear")
     res = input("Write need resolution: ")
     if res == "":
         print("Empty resolution!")
-        os.system("python3 $PREFIX/bin/start-box64.py")
+        os.system("python3 $PREFIX/bin/start-SteamDroidOS.py")
         exit()
     os.system("clear")
     print("\033[0;33mTermux-X11 started. If you want exit from Box64Droid, type \033[0;36m'1'\033[0;33m (or any key) or \033[0;36m'2'\033[0;33m to back to main menu in the terminal then press enter.\033[0m")
@@ -55,7 +55,7 @@ stop = input()
 print(" Stopping SteamDroidOS")
 if stop == "2":
     if 'WD' in os.environ:
-        os.system("python3 $PREFIX/bin/start-box64.py")
+        os.system("python3 $PREFIX/bin/start-SteamDroidOS.py")
     else:
         os.system("python3 $PREFIX/bin/box64droid.py --start")
     exit()

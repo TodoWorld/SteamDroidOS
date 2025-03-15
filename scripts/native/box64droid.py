@@ -124,7 +124,7 @@ def main_menu():
     os.system("clear")
     print("Welcome to Box64Droid! Select to start:")
     print("")
-    print("1) SteamDroidOS")
+    print("0) SteamDroidOS")
     print("1) Wine")
     print("2) Wine (debug version)")
     print("3) Change Wine version")

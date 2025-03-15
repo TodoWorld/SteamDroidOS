@@ -6,6 +6,7 @@ if ver != ver2:
     print("New update available! Updating scripts...")
     os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/box64droid.py &>/dev/null")
     os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/start-box64.py &>/dev/null")
+    os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/native/start-SteamDroidOS.py &>/dev/null")
     os.system("mv box64droid.py start-box64.py $PREFIX/bin/")
     os.system("rm $HOME/.shortcuts/*")
     os.system("wget https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/scripts/nativewd/1\)\ Start\ Box64Droid -q -P /data/data/com.termux/files/home/.shortcuts")
