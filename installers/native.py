@@ -44,6 +44,10 @@ def storage():
     if not os.path.exists("/data/data/com.termux/files/home/storage"):
         os.system("termux-setup-storage")
         time.sleep(2)
+def install_kde():
+    os.system("apt install -y kde-standard")
+def install_vnc():
+    os.system("apt install -y dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension")
 os.system("clear")
 print(" Starting Box64Droid installation... Please allow storage permission!")
 storage()

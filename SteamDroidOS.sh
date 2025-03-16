@@ -21,7 +21,7 @@ TARBALL_SHA256['aarch64']="db1b538171f40bc5f8980e3ce8153cf840627351e9c5dc2e5862f
 #TARBALL_URL['arm']="https://github.com/termux/proot-distro/releases/download/v4.11.0/ubuntu-noble-arm-pd-v4.11.0.tar.xz"
 #TARBALL_SHA256['arm']="dc5478e96f648e868d68c15c400338460088255d5d964bdfa33e5456ceea54ae"
 
-PROOT_ARGS+=(--bind=/system/lib64:/system/lib64 --user steamdroidos)
+PROOT_ARGS+=(--user steamdroidos --bind=/system/lib64:/system/lib64)
 #ENV["LD_LIBRARY_PATH"]="/system/lib64:$LD_LIBRARY_PATH"
 
 distro_setup() {
@@ -38,15 +38,25 @@ distro_setup() {
         run_proot_cmd apt install -y software-properties-common 
         run_proot_cmd apt install -y cmake build-essential pkg-config mono-runtime
         run_proot_cmd apt install -y libgtk2.0-0 gstreamer1.0-tools libgstreamer1.0-0 libice6 libsm6 libx11-dev libxcb1-dev
-        run_proot_cmd apt install -y kde-standard 
-        run_proot_cmd apt install -y dbus-x11 tigervnc-standalone-server tigervnc-xorg-extension #xfce4
+        run_proot_cmd apt install -y kde-standard dbus-x11  
         
+        # 安裝 Mesa（含 Turnip、Zink 同 llvmpipe）
+        run_proot_cmd apt install git python3 python3-pip meson ninja build-essential clang pkg-config libdrm-dev vulkan-tools mesa-utils -y
+        run_proot_cmd pip3 install mako
+        run_proot_cmd git clone https://gitlab.freedesktop.org/mesa/mesa.git
+        run_proot_cmd meson setup build-android-aarch64 -Dplatforms=android -Dvulkan-drivers=freedreno,swrast -Dfreedreno-kgsl=true -Dgallium-drivers=zink,swrast -Dprefix=/usr -S mesa
+        run_proot_cmd ninja -C build-android-aarch64 install
+        run_proot_cmd su - steamdroidos -c "echo \"set -x VK_ICD_FILENAMES /usr/share/vulkan/icd.d/freedreno_icd.aarch64.json\" >> ~/.config/fish/config.fish"
+        run_proot_cmd su - steamdroidos -c "echo \"set -x MESA_LOADER_DRIVER_OVERRIDE zink\" >> ~/.config/fish/config.fish"        
+
         # 編譯  virglrenderer
-        run_proot_cmd git clone https://github.com/virgl/virglrenderer.git
-        run_proot_cmd mkdir virglrenderer/build
-        run_proot_cmd cmake -DENABLE_VULKAN=ON -B virglrenderer/build -S virglrenderer
-        run_proot_cmd make -j$(nproc) -C virglrenderer/build/ install
+#        run_proot_cmd git clone https://github.com/virgl/virglrenderer.git
+#        run_proot_cmd mkdir virglrenderer/build
+#        run_proot_cmd cmake -DENABLE_VULKAN=ON -B virglrenderer/build -S virglrenderer
+#        run_proot_cmd make -j$(nproc) -C virglrenderer/build/ install
         
+        #run_proot_cmd wget -P ~/ https://raw.githubusercontent.com/TodoWorld/SteamDroidOS/main/AutoSelectGPUDrive.sh
+
         echo "Enable ARMHF i386 AMD64 Lib"
 #       run_proot_cmd dpkg --add-architecture armhf 
 #       run_proot_cmd dpkg --add-architecture i386
@@ -66,7 +76,7 @@ distro_setup() {
         run_proot_cmd passwd -d steamdroidos
         
         echo "Set ENV Value"
-        run_proot_cmd su - steamdroidos -c "echo \"set -x LD_LIBRARY_PATH /system/lib64 $LD_LIBRARY_PATH\" >> ~/.config/fish/config.fish"
+#        run_proot_cmd su - steamdroidos -c "echo \"set -x LD_LIBRARY_PATH /system/lib64 $LD_LIBRARY_PATH\" >> ~/.config/fish/config.fish"
 
         echo "Install pi-apps"
 #       run_proot_cmd su - steamdroidos -c "git clone https://github.com/Botspot/pi-apps"
@@ -82,6 +92,7 @@ distro_setup() {
 #       run_proot_cmd su - steamdroidos -c "~/pi-apps/manage install Steam"
 
         echo "Init VNC"
+        run_proot_cmd apt install -y tigervnc-standalone-server tigervnc-xorg-extension #xfce4
         run_proot_cmd su - steamdroidos -c "printf \"steamdroidos\nsteamdroidos\n\n\" | vncpasswd"
         run_proot_cmd su - steamdroidos -c "echo -e \"#!/bin/bash\nunset SESSION_MANAGER\nunset DBUS_SESSION_BUS_ADRESS\n\n# 啟動PulseAudio音效伺服器，音訊會從Termux傳出來\nexport PULSE_SERVER=127.0.0.1 && pulseaudio --start --disable-shm=1 --exit-idle-time=-1\n\n# 執行桌面環境，此處為XFCE\nexec startplasma-x11\" >> ~/.vnc/xstartup" #startxfce4
         run_proot_cmd su - steamdroidos -c "chmod +x ~/.vnc/xstartup"
